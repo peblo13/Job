@@ -25,44 +25,31 @@
 
         <!-- Main Content -->
         <main id="main">
-            <!-- Search Section -->
             <section id="search" class="search-section">
-                <h1>Znajdź Swoją Następną Pracę</h1>
-                <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem;">Przejrzyj tysiące ofert pracy i usług z najlepszymi firmami</p>
+                <div class="search-kicker">JobNexus Match</div>
+                <h1>Znajdź pracę dopasowaną do Ciebie</h1>
+                <p>Jedna wyszukiwarka dla ofert pracy, usług i Twoich kompetencji.</p>
                 <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Szukaj pozycji, firmy, lokalizacji..." class="search-input">
-                    <button id="searchBtn" class="search-btn">🔍 Szukaj</button>
+                    <input type="text" id="searchInput" placeholder="Stanowisko, firma, lokalizacja lub umiejętność" class="search-input">
+                    <button id="searchBtn" class="search-btn">Szukaj ofert</button>
+                    <button id="settingsBtn" class="settings-btn" type="button" aria-expanded="false" aria-controls="smartSettings" title="Ustawienia wyszukiwania">Ustawienia</button>
+                </div>
+                <div id="smartSettings" class="smart-settings" hidden>
+                    <div class="filter-group"><label for="categoryFilter">Kategoria</label><select id="categoryFilter" class="filter-input"><option value="">Wszystkie kategorie</option><option value="IT">IT / Programowanie</option><option value="Marketing">Marketing</option><option value="HR">HR / Kadrowe</option><option value="Sales">Sprzedaż</option><option value="Design">Design</option></select></div>
+                    <div class="filter-group"><label for="typeFilter">Typ umowy</label><select id="typeFilter" class="filter-input"><option value="">Wszystkie typy</option><option value="full-time">Pełny etat</option><option value="part-time">Część etatu</option><option value="contract">Kontrakt</option><option value="freelance">Freelance</option></select></div>
+                    <div class="filter-group"><label for="locationFilter">Lokalizacja</label><input type="text" id="locationFilter" placeholder="np. Warszawa" class="filter-input"></div>
+                    <button id="clearFilters" class="btn-secondary" type="button">Wyczyść filtry</button>
                 </div>
             </section>
 
-            <!-- Filters Section -->
-            <section id="filters" class="filters-section">
-                <div class="filter-group">
-                    <label for="categoryFilter">Kategoria</label>
-                    <select id="categoryFilter" class="filter-input">
-                        <option value="">Wszystkie kategorie</option>
-                        <option value="IT">IT / Programowanie</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="HR">HR / Kadrowe</option>
-                        <option value="Sales">Sprzedaż</option>
-                        <option value="Design">Design</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="typeFilter">Typ umowy</label>
-                    <select id="typeFilter" class="filter-input">
-                        <option value="">Wszystkie typy</option>
-                        <option value="full-time">Pełny etat</option>
-                        <option value="part-time">Część etatu</option>
-                        <option value="contract">Kontrakt</option>
-                        <option value="freelance">Freelance</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="locationFilter">Lokalizacja</label>
-                    <input type="text" id="locationFilter" placeholder="np. Warszawa" class="filter-input">
-                </div>
-                <button id="clearFilters" class="btn-secondary">🔄 Wyczyść filtry</button>
+            <section id="cvMatch" class="cv-match-section">
+                <div><div class="search-kicker">Dopasowanie CV</div><h2>Spersonalizuj wyniki</h2><p>Dodaj CV jako plik, obraz albo link. W tej wersji dopasowanie działa lokalnie w przeglądarce.</p></div>
+                <div class="cv-actions"><label class="upload-btn" for="cvFile">Dodaj CV</label><input id="cvFile" type="file" accept=".pdf,.doc,.docx,.txt,image/*" hidden><button id="cvUrlBtn" class="btn-secondary" type="button">Wklej URL</button></div>
+                <div id="cvStatus" class="cv-status" role="status">CV nie zostało jeszcze dodane.</div>
+            </section>
+
+            <section id="integrationStatus" class="integration-status" aria-label="Status funkcji">
+                <strong>Status funkcji</strong><span class="status-chip status-demo">Oferty: Jooble + fallback JSON</span><span class="status-chip status-off">AI analiza: niepodłączona</span><span class="status-chip status-live">API ofert: Jooble podłączone</span><span class="status-chip status-demo">Dopasowanie CV: lokalne</span>
             </section>
 
             <!-- Loading Indicator -->
@@ -75,7 +62,7 @@
             <section id="jobs" class="jobs-section">
                 <div class="section-title-container">
                     <h2 class="section-title">📋 Dostępne Oferty Pracy</h2>
-                    <span id="jobsCount" class="jobs-count">Ładowanie...</span>
+                    <span id="jobsCount" class="jobs-count" aria-live="polite"></span>
                 </div>
                 <div id="jobsList" class="jobs-list"></div>
 

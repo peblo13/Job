@@ -1,18 +1,28 @@
 // Job Service - Handle job data loading and display
 
-export async function loadJobs() {
+export async function loadJobs(query = '') {
   try {
-    // Try loading from local JSON file first
-    const response = await fetch('./public/ogloszenia/jobs.json')
+    const response = await fetch('/api/jooble', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keywords: query, location: '' })
+    })
     if (response.ok) {
       const data = await response.json()
-      return parseJobsData(data)
+      const jobs = parseJobsData(data.jobs || data)
+      if (jobs.length) return jobs
     }
   } catch (error) {
-    console.log('Local file not found, trying alternative source')
+    console.warn('[v0] Jooble unavailable, using local jobs', error)
   }
-  
-  // Fallback to demo data
+
+  try {
+    const response = await fetch('./public/ogloszenia/jobs.json')
+    if (response.ok) return parseJobsData(await response.json())
+  } catch (error) {
+    console.warn('[v0] Local jobs unavailable', error)
+  }
+
   return getDemoJobs()
 }
 
