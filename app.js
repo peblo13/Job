@@ -90,9 +90,19 @@ function setupEventListeners() {
 // ============== JOBS LOGIC ==============
 
 function performJobSearch() {
-  const query = document.getElementById('searchInput').value.toLowerCase().trim()
+  const query = document.getElementById('searchInput').value.trim()
   currentJobPage = 1
-  const terms = query.split(/\s+/).filter(Boolean)
+  const remoteJobs = loadJobs(query)
+  remoteJobs.then(jobs => {
+    allJobs = jobs
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
+    filteredJobs = !terms.length ? [...allJobs] : allJobs.filter(job => {
+      const haystack = [job.title, job.company, job.location, job.description, job.category].join(' ').toLowerCase()
+      return terms.every(term => haystack.includes(term))
+    })
+    renderJobsPage()
+  })
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
   filteredJobs = !terms.length ? [...allJobs] : allJobs.filter(job => {
     const haystack = [job.title, job.company, job.location, job.description, job.category].join(' ').toLowerCase()
     return terms.every(term => haystack.includes(term))
