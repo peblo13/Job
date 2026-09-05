@@ -57,8 +57,11 @@ async function init() {
 
 // Setup event listeners
 function setupEventListeners() {
-  // Search for jobs
+  // Smart search and CV matching
   document.getElementById('searchBtn').addEventListener('click', performJobSearch)
+  document.getElementById('settingsBtn').addEventListener('click', toggleSmartSettings)
+  document.getElementById('cvFile').addEventListener('change', handleCvFile)
+  document.getElementById('cvUrlBtn').addEventListener('click', handleCvUrl)
   document.getElementById('searchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') performJobSearch()
   })
@@ -87,19 +90,13 @@ function setupEventListeners() {
 // ============== JOBS LOGIC ==============
 
 function performJobSearch() {
-  const query = document.getElementById('searchInput').value.toLowerCase()
+  const query = document.getElementById('searchInput').value.toLowerCase().trim()
   currentJobPage = 1
-  
-  if (!query) {
-    filteredJobs = [...allJobs]
-  } else {
-    filteredJobs = allJobs.filter(job => 
-      job.title.toLowerCase().includes(query) ||
-      job.company.toLowerCase().includes(query) ||
-      job.location.toLowerCase().includes(query) ||
-      (job.description && job.description.toLowerCase().includes(query))
-    )
-  }
+  const terms = query.split(/\s+/).filter(Boolean)
+  filteredJobs = !terms.length ? [...allJobs] : allJobs.filter(job => {
+    const haystack = [job.title, job.company, job.location, job.description, job.category].join(' ').toLowerCase()
+    return terms.every(term => haystack.includes(term))
+  })
   
   if (filteredJobs.length === 0) {
     showNotification('Nie znaleziono ofert spełniających kryteria', 'info')
@@ -108,6 +105,42 @@ function performJobSearch() {
   }
   
   renderJobsPage()
+}
+
+function toggleSmartSettings() {
+  const panel = document.getElementById('smartSettings')
+  const button = document.getElementById('settingsBtn')
+  const isHidden = panel.hasAttribute('hidden')
+  panel.toggleAttribute('hidden')
+  button.setAttribute('aria-expanded', String(isHidden))
+}
+
+function handleCvFile(event) {
+  const file = event.target.files?.[0]
+  if (!file) return
+  const status = document.getElementById('cvStatus')
+  status.textContent = `Dodano: ${file.name}. Lokalna analiza dopasuje słowa kluczowe do ofert.`
+  if (file.type.startsWith('text/') || file.name.endsWith('.txt')) {
+    const reader = new FileReader()
+    reader.onload = () => applyCvKeywords(String(reader.result || ''))
+    reader.readAsText(file)
+  } else {
+    showNotification('Plik CV dodany. Dla PDF/DOC analiza AI wymaga podłączenia backendu.', 'info')
+  }
+}
+
+function handleCvUrl() {
+  const url = window.prompt('Wklej publiczny link do CV:')?.trim()
+  if (!url) return
+  try { new URL(url) } catch { showNotification('Podaj poprawny adres URL.', 'warning'); return }
+  document.getElementById('cvStatus').textContent = `Dodano link do CV: ${url}`
+  showNotification('Link zapisany. Pobieranie i analiza treści wymagają backendu.', 'info')
+}
+
+function applyCvKeywords(text) {
+  const keywords = text.toLowerCase().match(/[a-ząćęłńóśźż0-9+#.-]{3,}/gi) || []
+  const matches = allJobs.filter(job => keywords.some(keyword => [job.title, job.description, job.category].join(' ').toLowerCase().includes(keyword)))
+  if (matches.length) { filteredJobs = matches; currentJobPage = 1; renderJobsPage(); showNotification(`Dopasowano ${matches.length} ofert na podstawie CV.`, 'success') }
 }
 
 function applyJobFilters() {

@@ -16,11 +16,27 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Smart search and CV matching */
+.search-kicker { color: var(--primary-color); font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .5rem; }
+.search-section h1 { margin-bottom: .75rem; }
+.search-section p { color: var(--text-light); }
+.search-container { align-items: stretch; flex-wrap: wrap; }
+.search-container .search-input { flex: 1 1 300px; }
+.settings-btn { border: 2px solid var(--primary-color); border-radius: 12px; background: white; color: var(--primary-color); padding: 1rem 1.25rem; font-weight: 700; cursor: pointer; }
+.smart-settings { display: flex; gap: 1rem; flex-wrap: wrap; text-align: left; margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,.76); border-radius: 14px; }
+.smart-settings .filter-group { min-width: 180px; }
+.cv-match-section, .integration-status { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; padding: 1.5rem; background: white; border-radius: 16px; box-shadow: var(--shadow-md); }
+.cv-match-section h2 { margin-bottom: .35rem; }
+.cv-match-section p { color: var(--text-light); }
+.cv-actions { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+.upload-btn { display: inline-flex; align-items: center; justify-content: center; padding: .85rem 1.25rem; border-radius: 10px; background: var(--primary-color); color: white; font-weight: 700; cursor: pointer; }
+.cv-status { flex-basis: 100%; color: var(--text-light); font-size: .9rem; }
+.integration-status { justify-content: flex-start; flex-wrap: wrap; font-size: .9rem; }
+.status-chip { padding: .45rem .7rem; border-radius: 999px; font-weight: 600; }
+.status-demo { background: #fef3c7; color: #92400e; }
+.status-off { background: #f1f5f9; color: #64748b; }
+@media (max-width: 600px) { .cv-match-section, .integration-status { align-items: stretch; flex-direction: column; } .search-container { gap: .65rem; } .search-btn, .settings-btn { width: 100%; } }
+
 
 html {
   scroll-behavior: smooth;
